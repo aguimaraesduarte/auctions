@@ -149,45 +149,32 @@ plot_functions(fp_exp, [2, 5, 10], [0, 1], "First price bid function, Exp (lambd
 plot_functions(sp_exp, [2, 5, 10], [0, 1], "Second price bid function, Exp (lambda=1)")
 
 # 1.b)
-
-print "\n############################\n"
-
 d = {
-	"U(0,1)": {"First Price": fp_rev_Uni_0_1,
-	           "Second Price": sp_rev_Uni_0_1},
-	"U(5,10)": {"First Price": fp_rev_Uni_5_10,
-	            "Second Price": sp_rev_Uni_5_10},
-	"Triangular": {"First Price": fp_rev_triangle,
-	               "Second Price": sp_rev_triangle},
-	"Exp (lambda=1)": {"First Price": fp_rev_exp,
-	                   "Second Price": sp_rev_exp},
+	"U(0,1)": {"First Price": {"Revenue": fp_rev_Uni_0_1,
+	                           "St. Dev": fp_stdev_Uni_0_1},
+	           "Second Price": {"Revenue": sp_rev_Uni_0_1,
+	                            "St. Dev":  sp_stdev_Uni_0_1}},
+	"U(5,10)": {"First Price": {"Revenue": fp_rev_Uni_5_10,
+	                            "St. Dev": fp_stdev_Uni_5_10},
+	            "Second Price": {"Revenue": sp_rev_Uni_5_10,
+	                             "St. Dev": sp_stdev_Uni_5_10}},
+	"Triangular": {"First Price": {"Revenue": fp_rev_triangle,
+	                               "St. Dev": fp_stdev_triangle},
+	               "Second Price": {"Revenue": sp_rev_triangle,
+	                                "St. Dev": sp_stdev_triangle}},
+	"Exp (lambda=1)": {"First Price": {"Revenue": fp_rev_exp,
+	                                   "St. Dev": fp_stdev_exp},
+	                   "Second Price": {"Revenue": sp_rev_exp,
+	                                    "St. Dev": sp_stdev_exp}}
 }
 
-print "Expected revenue"
 for dist in d:
-	print "  {}".format(dist)
+	print "{}".format(dist)
 	for auc_type in d[dist]:
-		print "    {}".format(auc_type)
+		print "  {}".format(auc_type)
 		for n in [2, 5, 10]:
-			print "      n={}: {}".format(n, d[dist][auc_type](n))
+			for f in d[dist][auc_type]:
+				print "    n={:2d}: {:.4f} ({})".format(n, d[dist][auc_type][f](n), f)
 
-print "\n############################\n"
 
-d = {
-	"U(0,1)": {"First Price": fp_stdev_Uni_0_1,
-	           "Second Price": sp_stdev_Uni_0_1},
-	"U(5,10)": {"First Price": fp_stdev_Uni_5_10,
-	            "Second Price": sp_stdev_Uni_5_10},
-	"Triangular": {"First Price": fp_stdev_triangle,
-	               "Second Price": sp_stdev_triangle},
-	"Exp (lambda=1)": {"First Price": fp_stdev_exp,
-	                   "Second Price": sp_stdev_exp},
-}
-
-print "Standard Deviation"
-for dist in d:
-	print "  {}".format(dist)
-	for auc_type in d[dist]:
-		print "    {}".format(auc_type)
-		for n in [2, 5, 10]:
-			print "      n={}: {}".format(n, d[dist][auc_type](n))
+# 1.c)
