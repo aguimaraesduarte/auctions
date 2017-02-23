@@ -31,10 +31,10 @@ def sp_rev_Uni_0_1(n):
 
 # St. Dev
 def fp_stdev_Uni_0_1(n):
-	return np.sqrt((((n-1)**2)/(n*(n+2)))-fp_rev_Uni_0_1(n)**2)
+	return np.sqrt((((n-1.)**2)/(n*(n+2)))-fp_rev_Uni_0_1(n)**2)
 
 def sp_stdev_Uni_0_1(n):
-	return np.sqrt(((n*(n-1))/((n+1)*(n+2)))-fp_rev_Uni_0_1(n)**2)
+	return np.sqrt(((n*(n-1.))/((n+1)*(n+2)))-sp_rev_Uni_0_1(n)**2)
 
 ################# UNIFORM [5,10]
 # Bid functions
@@ -53,10 +53,10 @@ def sp_rev_Uni_5_10(n):
 
 # St. Dev
 def fp_stdev_Uni_5_10(n):
-	return np.sqrt(5*(((n-1)**2)/(n*(n+2)))-fp_rev_Uni_5_10(n)**2) #not sure
+	return np.sqrt((5**2)*(((n-1.)**2)/(n*(n+2)))-fp_rev_Uni_5_10(n)**2) #not sure
 
 def sp_stdev_Uni_5_10(n):
-	return np.sqrt(5*((n*(n-1))/((n+1)*(n+2)))-fp_rev_Uni_5_10(n)**2) #not sure
+	return np.sqrt((5**2)*((n*(n-1.))/((n+1)*(n+2)))-sp_rev_Uni_5_10(n)**2) #not sure
 
 ################# TRIANGLE [0, 1]
 def fp_triangle(v, n):
@@ -91,7 +91,11 @@ def fp_stdev_triangle(n):
 	return -1 # TODO
 
 def sp_stdev_triangle(n):
-	return -1 # TODO
+	x_array_1 = np.arange(0, .5+step, step)
+	x_array_2 = np.arange(.5, 1+step, step)
+	y_array_1 = [(x**2)*(1-2*x**2)*(x**(2*n-3)) for x in x_array_1]
+	y_array_2 = [((1-x)**3)*((1-2*(1-x**2))**(n-2))*(x**2) for x in x_array_2]
+	return n*(n-1)*(2**n)*np.trapz(y=y_array_1, x=x_array_1) + 8*n*(n-1)*np.trapz(y=y_array_2, x=x_array_2)
 
 ################# EXPONENTIAL (lambda=1)
 def fp_exp(v, n):
@@ -121,25 +125,28 @@ def fp_stdev_exp(n):
 	return -1 # TODO
 
 def sp_stdev_exp(n):
-	return -1 # TODO
+	x_array = np.arange(0, 1+step, step)
+	y_array = [np.exp(-2*1.0*x)*(1-np.exp(-1.0*x))**(n-2)*(x**2) for x in x_array]
+	return n*(n-1)*1*np.trapz(y=y_array, x=x_array)
+
 
 ################# MAIN
 # 1.a)
 ## U(0,1)
-plot_functions(fp_Uni_0_1, [2, 5, 10], [0, 1], "First price bid function, U(0,1)")
-plot_functions(sp_Uni_0_1, [2, 5, 10], [0, 1], "Second price bid function, U(0,1)")
+# plot_functions(fp_Uni_0_1, [2, 5, 10], [0, 1], "First price bid function, U(0,1)")
+# plot_functions(sp_Uni_0_1, [2, 5, 10], [0, 1], "Second price bid function, U(0,1)")
 
-## U(5,10)
-plot_functions(fp_Uni_5_10, [2, 5, 10], [5, 10], "First price bid function, U(5,10)")
-plot_functions(sp_Uni_5_10, [2, 5, 10], [5, 10], "Second price bid function, U(5,10)")
+# ## U(5,10)
+# plot_functions(fp_Uni_5_10, [2, 5, 10], [5, 10], "First price bid function, U(5,10)")
+# plot_functions(sp_Uni_5_10, [2, 5, 10], [5, 10], "Second price bid function, U(5,10)")
 
-## triangle
-plot_functions(fp_triangle, [2, 5, 10], [0, 1], "First price bid function, Triangular")
-plot_functions(sp_triange, [2, 5, 10], [0, 1], "Second price bid function, Triangular")
+# ## triangle
+# plot_functions(fp_triangle, [2, 5, 10], [0, 1], "First price bid function, Triangular")
+# plot_functions(sp_triange, [2, 5, 10], [0, 1], "Second price bid function, Triangular")
 
-## exponential
-plot_functions(fp_exp, [2, 5, 10], [0, 1], "First price bid function, Exp (lambda=1)")
-plot_functions(sp_exp, [2, 5, 10], [0, 1], "Second price bid function, Exp (lambda=1)")
+# ## exponential
+# plot_functions(fp_exp, [2, 5, 10], [0, 1], "First price bid function, Exp (lambda=1)")
+# plot_functions(sp_exp, [2, 5, 10], [0, 1], "Second price bid function, Exp (lambda=1)")
 
 # 1.b)
 
