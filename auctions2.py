@@ -133,20 +133,20 @@ def sp_stdev_exp(n):
 ################# MAIN
 # 1.a)
 ## U(0,1)
-# plot_functions(fp_Uni_0_1, [2, 5, 10], [0, 1], "First price bid function, U(0,1)")
-# plot_functions(sp_Uni_0_1, [2, 5, 10], [0, 1], "Second price bid function, U(0,1)")
+plot_functions(fp_Uni_0_1, [2, 5, 10], [0, 1], "First price bid function, U(0,1)")
+plot_functions(sp_Uni_0_1, [2, 5, 10], [0, 1], "Second price bid function, U(0,1)")
 
-# ## U(5,10)
-# plot_functions(fp_Uni_5_10, [2, 5, 10], [5, 10], "First price bid function, U(5,10)")
-# plot_functions(sp_Uni_5_10, [2, 5, 10], [5, 10], "Second price bid function, U(5,10)")
+## U(5,10)
+plot_functions(fp_Uni_5_10, [2, 5, 10], [5, 10], "First price bid function, U(5,10)")
+plot_functions(sp_Uni_5_10, [2, 5, 10], [5, 10], "Second price bid function, U(5,10)")
 
-# ## triangle
-# plot_functions(fp_triangle, [2, 5, 10], [0, 1], "First price bid function, Triangular")
-# plot_functions(sp_triange, [2, 5, 10], [0, 1], "Second price bid function, Triangular")
+## triangle
+plot_functions(fp_triangle, [2, 5, 10], [0, 1], "First price bid function, Triangular")
+plot_functions(sp_triange, [2, 5, 10], [0, 1], "Second price bid function, Triangular")
 
-# ## exponential
-# plot_functions(fp_exp, [2, 5, 10], [0, 1], "First price bid function, Exp (lambda=1)")
-# plot_functions(sp_exp, [2, 5, 10], [0, 1], "Second price bid function, Exp (lambda=1)")
+## exponential
+plot_functions(fp_exp, [2, 5, 10], [0, 1], "First price bid function, Exp (lambda=1)")
+plot_functions(sp_exp, [2, 5, 10], [0, 1], "Second price bid function, Exp (lambda=1)")
 
 # 1.b)
 
