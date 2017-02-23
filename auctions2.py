@@ -93,7 +93,7 @@ def sp_rev_triangle(n):
 def fp_stdev_triangle(n):
 	x_array = np.arange(0, 1+step, step) # should not be 1 I think
 	y_array = [fp_triangle(x, n)*(x**2) for x in x_array]
-	return np.trapz(y=y_array, x=x_array)
+	return np.sqrt(np.trapz(y=y_array, x=x_array)-fp_rev_triangle(n)**2)
 
 def sp_stdev_triangle(n):
 	x_array_1 = np.arange(0, .5+step, step)
@@ -131,7 +131,7 @@ def sp_rev_exp(n):
 def fp_stdev_exp(n):
 	x_array = np.arange(0, 1+step, step) # should not be 1 I think
 	y_array = [fp_exp(x, n)*(x**2) for x in x_array]
-	return np.trapz(y=y_array, x=x_array)
+	return np.sqrt(np.trapz(y=y_array, x=x_array) - fp_rev_exp(n)**2)
 
 def sp_stdev_exp(n):
 	x_array = np.arange(0, 1+step, step)
