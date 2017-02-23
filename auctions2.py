@@ -62,7 +62,7 @@ def sp_stdev_Uni_5_10(n):
 ################# TRIANGLE [0, 1]
 def fp_triangle(v, n):
 	if v == 0:
-		return
+		return 0
 	x_array = np.arange(0, v+step, step)
 	y_array = [Fn1_triangle(x, n) for x in x_array]
 	return v - np.trapz(y=y_array, x=x_array)/Fn1_triangle(v, n)
@@ -78,7 +78,9 @@ def sp_triange(v, n):
 
 # Revenue
 def fp_rev_triangle(n):
-	return -1 # TODO
+	x_array = np.arange(0, 1+step, step) # should not be 1 I think
+	y_array = [fp_triangle(x, n)*x for x in x_array]
+	return np.trapz(y=y_array, x=x_array)
 
 def sp_rev_triangle(n):
 	x_array_1 = np.arange(0, .5+step, step)
@@ -89,7 +91,9 @@ def sp_rev_triangle(n):
 
 # St. Dev
 def fp_stdev_triangle(n):
-	return -1 # TODO
+	x_array = np.arange(0, 1+step, step) # should not be 1 I think
+	y_array = [fp_triangle(x, n)*(x**2) for x in x_array]
+	return np.trapz(y=y_array, x=x_array)
 
 def sp_stdev_triangle(n):
 	x_array_1 = np.arange(0, .5+step, step)
@@ -101,7 +105,7 @@ def sp_stdev_triangle(n):
 ################# EXPONENTIAL (lambda=1)
 def fp_exp(v, n):
 	if v == 0:
-		return
+		return 0
 	x_array = np.arange(0, v+step, step)
 	y_array = [Fn1_exp(x, n) for x in x_array]
 	return v - np.trapz(y=y_array, x=x_array)/Fn1_exp(v, n)
@@ -114,7 +118,9 @@ def sp_exp(v, n):
 
 # Revenue
 def fp_rev_exp(n):
-	return -1 # TODO
+	x_array = np.arange(0, 1+step, step) # should not be 1 I think
+	y_array = [fp_exp(x, n)*x for x in x_array]
+	return np.trapz(y=y_array, x=x_array)
 
 def sp_rev_exp(n):
 	x_array = np.arange(0, 1+step, step)
@@ -123,7 +129,9 @@ def sp_rev_exp(n):
 
 # St. Dev
 def fp_stdev_exp(n):
-	return -1 # TODO
+	x_array = np.arange(0, 1+step, step) # should not be 1 I think
+	y_array = [fp_exp(x, n)*(x**2) for x in x_array]
+	return np.trapz(y=y_array, x=x_array)
 
 def sp_stdev_exp(n):
 	x_array = np.arange(0, 1+step, step)
