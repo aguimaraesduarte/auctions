@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import triang
 import random
+from collections import OrderedDict
 
 step = 0.001
 
@@ -167,6 +168,7 @@ d = {
 	                   "Second Price": {"Revenue": sp_rev_exp,
 	                                    "St. Dev": sp_stdev_exp}}
 }
+d = OrderedDict(sorted(d.items(), key=lambda t: t[0]))
 
 for dist in d:
 	print "{}".format(dist)
