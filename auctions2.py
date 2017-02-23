@@ -29,6 +29,13 @@ def fp_rev_Uni_0_1(n):
 def sp_rev_Uni_0_1(n):
 	return (n-1.)/(n+1.)
 
+# St. Dev
+def fp_stdev_Uni_0_1(n):
+	return np.sqrt((((n-1)**2)/(n*(n+2)))-fp_rev_Uni_0_1(n)**2)
+
+def sp_stdev_Uni_0_1(n):
+	return np.sqrt(((n*(n-1))/((n+1)*(n+2)))-fp_rev_Uni_0_1(n)**2)
+
 ################# UNIFORM [5,10]
 # Bid functions
 def fp_Uni_5_10(v, n):
@@ -43,6 +50,13 @@ def fp_rev_Uni_5_10(n):
 
 def sp_rev_Uni_5_10(n):
 	return 5*(n-1.)/(n+1.)
+
+# St. Dev
+def fp_stdev_Uni_5_10(n):
+	return np.sqrt(5*(((n-1)**2)/(n*(n+2)))-fp_rev_Uni_5_10(n)**2) #not sure
+
+def sp_stdev_Uni_5_10(n):
+	return np.sqrt(5*((n*(n-1))/((n+1)*(n+2)))-fp_rev_Uni_5_10(n)**2) #not sure
 
 ################# TRIANGLE [0, 1]
 def fp_triangle(v, n):
@@ -63,7 +77,7 @@ def sp_triange(v, n):
 
 # Revenue
 def fp_rev_triangle(n):
-	return -1
+	return -1 # TODO
 
 def sp_rev_triangle(n):
 	x_array_1 = np.arange(0, .5+step, step)
@@ -71,6 +85,13 @@ def sp_rev_triangle(n):
 	y_array_1 = [(x**2)*(1-2*x**2)*(x**(2*n-4)) for x in x_array_1]
 	y_array_2 = [((1-x)**3)*((1-2*(1-x**2))**(n-2))*x for x in x_array_2]
 	return n*(n-1)*(2**n)*np.trapz(y=y_array_1, x=x_array_1) + 8*n*(n-1)*np.trapz(y=y_array_2, x=x_array_2)
+
+# St. Dev
+def fp_stdev_triangle(n):
+	return -1 # TODO
+
+def sp_stdev_triangle(n):
+	return -1 # TODO
 
 ################# EXPONENTIAL (lambda=1)
 def fp_exp(v, n):
@@ -88,12 +109,19 @@ def sp_exp(v, n):
 
 # Revenue
 def fp_rev_exp(n):
-	return -1
+	return -1 # TODO
 
 def sp_rev_exp(n):
 	x_array = np.arange(0, 1+step, step)
 	y_array = [np.exp(-2*1.0*x)*(1-np.exp(-1.0*x))**(n-2)*x for x in x_array]
 	return n*(n-1)*1*np.trapz(y=y_array, x=x_array)
+
+# St. Dev
+def fp_stdev_exp(n):
+	return -1 # TODO
+
+def sp_stdev_exp(n):
+	return -1 # TODO
 
 ################# MAIN
 # 1.a)
@@ -114,6 +142,9 @@ plot_functions(fp_exp, [2, 5, 10], [0, 1], "First price bid function, Exp (lambd
 plot_functions(sp_exp, [2, 5, 10], [0, 1], "Second price bid function, Exp (lambda=1)")
 
 # 1.b)
+
+print "\n############################\n"
+
 d = {
 	"U(0,1)": {"First Price": fp_rev_Uni_0_1,
 	           "Second Price": sp_rev_Uni_0_1},
@@ -124,7 +155,29 @@ d = {
 	"Exp (lambda=1)": {"First Price": fp_rev_exp,
 	                   "Second Price": sp_rev_exp},
 }
+
 print "Expected revenue"
+for dist in d:
+	print "  {}".format(dist)
+	for auc_type in d[dist]:
+		print "    {}".format(auc_type)
+		for n in [2, 5, 10]:
+			print "      n={}: {}".format(n, d[dist][auc_type](n))
+
+print "\n############################\n"
+
+d = {
+	"U(0,1)": {"First Price": fp_stdev_Uni_0_1,
+	           "Second Price": sp_stdev_Uni_0_1},
+	"U(5,10)": {"First Price": fp_stdev_Uni_5_10,
+	            "Second Price": sp_stdev_Uni_5_10},
+	"Triangular": {"First Price": fp_stdev_triangle,
+	               "Second Price": sp_stdev_triangle},
+	"Exp (lambda=1)": {"First Price": fp_stdev_exp,
+	                   "Second Price": sp_stdev_exp},
+}
+
+print "Standard Deviation"
 for dist in d:
 	print "  {}".format(dist)
 	for auc_type in d[dist]:
