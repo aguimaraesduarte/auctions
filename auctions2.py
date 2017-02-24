@@ -139,6 +139,69 @@ def sp_stdev_exp(n):
 	return n*(n-1)*1*np.trapz(y=y_array, x=x_array)
 
 
+################# RESERVE OPTIMIZATION
+
+# FOR U[0,1]
+def run_u_0_1_auction(n):
+    bidder_vals = [sp_Uni_0_1(np.random.rand(), n) for cnt in range(n)]
+    return sorted(bidder_vals)[-2]
+
+
+def get_reserve_profit_u_0_1(n, seller_val, reserve, num_sims=500):
+    profits = []
+    for i in range(num_sims):
+        win_bid = run_u_0_1_auction(n)
+        if win_bid > reserve:
+            profits.append(win_bid-seller_val)
+        else:
+            profits.append(0)
+    return np.mean(profits)
+
+
+def get_optimal_reserve_u_0_1(n, n_sims=500):
+    optimal_reserves = []
+    seller_vals = np.arange(0.1, 1.0, 0.1)
+    reserves = np.arange(0.0, 1.1, 0.1)
+    for seller_v in seller_vals:
+        tmp = [get_reserve_profit_u_0_1(n, seller_v, reserve, num_sims=n_sims) for reserve in reserves]
+        optimal_reserves.append(reserves[tmp.index(max(tmp))])
+    return seller_vals, optimal_reserves
+
+# FOR U[5,10]
+def run_u_5_10_auction(n):
+    bidder_vals = [sp_Uni_5_10(np.random.uniform(5,10), n) for cnt in range(n)]
+    return sorted(bidder_vals)[-2]
+
+
+def get_reserve_profit_u_5_10(n, seller_val, reserve, num_sims=500):
+    profits = []
+    for i in range(num_sims):
+        win_bid = run_u_5_10_auction(n)
+        if win_bid > reserve:
+            profits.append(win_bid-seller_val)
+        else:
+            profits.append(0)
+    return np.mean(profits)
+
+
+def get_optimal_reserve_u_5_10(n, n_sims=500):
+    optimal_reserves = []
+    seller_vals = np.arange(5.0, 10.0, 0.1)
+    reserves = np.arange(5.0, 10.1, 0.1)
+    for seller_v in seller_vals:
+        tmp = [get_reserve_profit_u_5_10(n, seller_v, reserve, num_sims=n_sims) for reserve in reserves]
+        optimal_reserves.append(reserves[tmp.index(max(tmp))])
+    return seller_vals, optimal_reserves
+
+
+def plot_reserves(vals, reserves, auc_form):
+    plt.plot(vals, reserves)
+    plt.xlabel('Seller Values')
+    plt.ylabel('Optimal Reserve Price')
+    plt.title('Seller Values v Optimal Reserve Price for {}'.format(auc_form))
+    plt.show()
+	
+
 ################# MAIN
 # 1.a)
 ## U(0,1)
