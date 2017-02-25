@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import triang
-import random
 from collections import OrderedDict
 
 step = 0.001
@@ -62,7 +61,7 @@ def sp_stdev_Uni_5_10(n):
 ################# TRIANGLE [0, 1]
 def fp_triangle(v, n):
 	if v == 0:
-		return 0
+		return 0.0
 	x_array = np.arange(0, v+step, step)
 	y_array = [Fn1_triangle(x, n) for x in x_array]
 	return v - np.trapz(y=y_array, x=x_array)/Fn1_triangle(v, n)
@@ -105,7 +104,7 @@ def sp_stdev_triangle(n):
 ################# EXPONENTIAL (lambda=1)
 def fp_exp(v, n):
 	if v == 0:
-		return 0
+		return 0.0
 	x_array = np.arange(0, v+step, step)
 	y_array = [Fn1_exp(x, n) for x in x_array]
 	return v - np.trapz(y=y_array, x=x_array)/Fn1_exp(v, n)
