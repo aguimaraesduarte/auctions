@@ -6,12 +6,22 @@ from collections import OrderedDict
 step = 0.001
 
 ################# PLOT
-def plot_functions(func, list_n, rng, title=""):
+def plot_functions(func, list_n, rng, auc_type, dist):
 	x = np.arange(rng[0], rng[1], step)
 	for n in list_n:
 		plt.plot(x, [func(v, n) for v in x], label="n={}".format(n))
 	plt.legend(loc=2)
-	plt.title(title)
+	plt.title("{} bid function, {}".format(auc_type, dist))
+	plt.show()
+
+def plot_reserves(func, list_n, auc_form):
+	for n in list_n:
+		vals, reserves = func(n)
+		plt.plot(vals, reserves, label="n={}".format(n))
+	plt.legend(loc=2)
+	plt.xlabel('Seller Values')
+	plt.ylabel('Optimal Reserve Price')
+	plt.title('Seller Values v Optimal Reserve Price for {}'.format(auc_form))
 	plt.show()
 
 ################# UNIFORM [0,1]
@@ -142,101 +152,99 @@ def sp_stdev_exp(n):
 
 # FOR U[0,1]
 def run_u_0_1_auction(n):
-    bidder_vals = [sp_Uni_0_1(np.random.rand(), n) for cnt in range(n)]
-    return sorted(bidder_vals)[-2]
+	bidder_vals = [sp_Uni_0_1(np.random.uniform(0, 1), n) for cnt in range(n)]
+	return sorted(bidder_vals)[-2]
 
 
 def get_reserve_profit_u_0_1(n, seller_val, reserve, num_sims=500):
-    profits = []
-    for i in range(num_sims):
-        win_bid = run_u_0_1_auction(n)
-        if win_bid > reserve:
-            profits.append(win_bid-seller_val)
-        else:
-            profits.append(0)
-    return np.mean(profits)
+	profits = []
+	for i in range(num_sims):
+		win_bid = run_u_0_1_auction(n)
+		if win_bid > reserve:
+			profits.append(win_bid-seller_val)
+		else:
+			profits.append(0)
+	return np.mean(profits)
 
 
 def get_optimal_reserve_u_0_1(n, n_sims=500):
-    optimal_reserves = []
-    seller_vals = np.arange(0.1, 1.0, 0.1)
-    reserves = np.arange(0.0, 1.1, 0.1)
-    for seller_v in seller_vals:
-        tmp = [get_reserve_profit_u_0_1(n, seller_v, reserve, num_sims=n_sims) for reserve in reserves]
-        optimal_reserves.append(reserves[tmp.index(max(tmp))])
-    return seller_vals, optimal_reserves
+	optimal_reserves = []
+	seller_vals = np.arange(0.0, 1.0, 0.1)
+	reserves = np.arange(0.0, 1.1, 0.1)
+	for seller_v in seller_vals:
+		tmp = [get_reserve_profit_u_0_1(n, seller_v, reserve, num_sims=n_sims) for reserve in reserves]
+		optimal_reserves.append(reserves[tmp.index(max(tmp))])
+	return seller_vals, optimal_reserves
 
 # FOR U[5,10]
 def run_u_5_10_auction(n):
-    bidder_vals = [sp_Uni_5_10(np.random.uniform(5,10), n) for cnt in range(n)]
-    return sorted(bidder_vals)[-2]
+	bidder_vals = [sp_Uni_5_10(np.random.uniform(5, 10), n) for cnt in range(n)]
+	return sorted(bidder_vals)[-2]
 
 
 def get_reserve_profit_u_5_10(n, seller_val, reserve, num_sims=500):
-    profits = []
-    for i in range(num_sims):
-        win_bid = run_u_5_10_auction(n)
-        if win_bid > reserve:
-            profits.append(win_bid-seller_val)
-        else:
-            profits.append(0)
-    return np.mean(profits)
+	profits = []
+	for i in range(num_sims):
+		win_bid = run_u_5_10_auction(n)
+		if win_bid > reserve:
+			profits.append(win_bid-seller_val)
+		else:
+			profits.append(0)
+	return np.mean(profits)
 
 
 def get_optimal_reserve_u_5_10(n, n_sims=500):
-    optimal_reserves = []
-    seller_vals = np.arange(5.0, 10.0, 0.1)
-    reserves = np.arange(5.0, 10.1, 0.1)
-    for seller_v in seller_vals:
-        tmp = [get_reserve_profit_u_5_10(n, seller_v, reserve, num_sims=n_sims) for reserve in reserves]
-        optimal_reserves.append(reserves[tmp.index(max(tmp))])
-    return seller_vals, optimal_reserves
-
-
-def plot_reserves(vals, reserves, auc_form):
-    plt.plot(vals, reserves)
-    plt.xlabel('Seller Values')
-    plt.ylabel('Optimal Reserve Price')
-    plt.title('Seller Values v Optimal Reserve Price for {}'.format(auc_form))
-    plt.show()
+	optimal_reserves = []
+	seller_vals = np.arange(5.0, 10.0, 0.1)
+	reserves = np.arange(5.0, 10.1, 0.1)
+	for seller_v in seller_vals:
+		tmp = [get_reserve_profit_u_5_10(n, seller_v, reserve, num_sims=n_sims) for reserve in reserves]
+		optimal_reserves.append(reserves[tmp.index(max(tmp))])
+	return seller_vals, optimal_reserves
 	
 
 ################# MAIN
 # 1.a)
-## U(0,1)
-plot_functions(fp_Uni_0_1, [2, 5, 10], [0, 1], "First price bid function, U(0,1)")
-plot_functions(sp_Uni_0_1, [2, 5, 10], [0, 1], "Second price bid function, U(0,1)")
+d = {
+	"U(0,1)": {"First Price": fp_Uni_0_1,
+			   "Second Price": sp_Uni_0_1,
+			   "Range": [0, 1]},
+	"U(5,10)": {"First Price": fp_Uni_5_10,
+				"Second Price": sp_Uni_5_10,
+				"Range": [5, 10]},
+	"Triangular": {"First Price": fp_triangle,
+				   "Second Price": sp_triange,
+				   "Range": [0, 1]},
+	"Exp (lambda=1)": {"First Price": fp_exp,
+					   "Second Price": sp_exp,
+					   "Range": [0, 1]},
+}
+d = OrderedDict(sorted(d.items(), key=lambda t: t[0]))
 
-## U(5,10)
-plot_functions(fp_Uni_5_10, [2, 5, 10], [5, 10], "First price bid function, U(5,10)")
-plot_functions(sp_Uni_5_10, [2, 5, 10], [5, 10], "Second price bid function, U(5,10)")
+for dist in d:
+	for auc_type in d[dist]:
+		if auc_type != "Range":
+			plot_functions(d[dist][auc_type], [2, 5, 10], d[dist]["Range"], auc_type, dist)
 
-## triangle
-plot_functions(fp_triangle, [2, 5, 10], [0, 1], "First price bid function, Triangular")
-plot_functions(sp_triange, [2, 5, 10], [0, 1], "Second price bid function, Triangular")
-
-## exponential
-plot_functions(fp_exp, [2, 5, 10], [0, 1], "First price bid function, Exp (lambda=1)")
-plot_functions(sp_exp, [2, 5, 10], [0, 1], "Second price bid function, Exp (lambda=1)")
 
 # 1.b)
 d = {
 	"U(0,1)": {"First Price": {"Revenue": fp_rev_Uni_0_1,
-	                           "St. Dev": fp_stdev_Uni_0_1},
-	           "Second Price": {"Revenue": sp_rev_Uni_0_1,
-	                            "St. Dev":  sp_stdev_Uni_0_1}},
+							   "St. Dev": fp_stdev_Uni_0_1},
+			   "Second Price": {"Revenue": sp_rev_Uni_0_1,
+								"St. Dev":  sp_stdev_Uni_0_1}},
 	"U(5,10)": {"First Price": {"Revenue": fp_rev_Uni_5_10,
-	                            "St. Dev": fp_stdev_Uni_5_10},
-	            "Second Price": {"Revenue": sp_rev_Uni_5_10,
-	                             "St. Dev": sp_stdev_Uni_5_10}},
+								"St. Dev": fp_stdev_Uni_5_10},
+				"Second Price": {"Revenue": sp_rev_Uni_5_10,
+								 "St. Dev": sp_stdev_Uni_5_10}},
 	"Triangular": {"First Price": {"Revenue": fp_rev_triangle,
-	                               "St. Dev": fp_stdev_triangle},
-	               "Second Price": {"Revenue": sp_rev_triangle,
-	                                "St. Dev": sp_stdev_triangle}},
+								   "St. Dev": fp_stdev_triangle},
+				   "Second Price": {"Revenue": sp_rev_triangle,
+									"St. Dev": sp_stdev_triangle}},
 	"Exp (lambda=1)": {"First Price": {"Revenue": fp_rev_exp,
-	                                   "St. Dev": fp_stdev_exp},
-	                   "Second Price": {"Revenue": sp_rev_exp,
-	                                    "St. Dev": sp_stdev_exp}}
+									   "St. Dev": fp_stdev_exp},
+					   "Second Price": {"Revenue": sp_rev_exp,
+										"St. Dev": sp_stdev_exp}}
 }
 d = OrderedDict(sorted(d.items(), key=lambda t: t[0]))
 
@@ -246,7 +254,17 @@ for dist in d:
 		print "  {}".format(auc_type)
 		for n in [2, 5, 10]:
 			for f in d[dist][auc_type]:
-				print "    n={:2d}: {:.4f} ({})".format(n, d[dist][auc_type][f](n), f)
+				print "	n={:2d}: {:.4f} ({})".format(n, d[dist][auc_type][f](n), f)
 
 
 # 1.c)
+d = {
+	"U(0,1)": get_optimal_reserve_u_0_1,
+	"U(5,10)": get_optimal_reserve_u_5_10#,
+	# "Triangular": get_optimal_reserve__triangle,
+	# "Exp (lambda=1)": get_optimal_reserve_exp
+}
+d = OrderedDict(sorted(d.items(), key=lambda t: t[0]))
+
+for dist in d:
+	plot_reserves(d[dist], [2, 5, 10], dist)
