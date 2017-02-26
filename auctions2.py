@@ -11,6 +11,8 @@ def plot_functions(func, list_n, rng, auc_type, dist):
 	for n in list_n:
 		plt.plot(x, [func(v, n) for v in x], label="n={}".format(n))
 	plt.legend(loc=2)
+	plt.xlabel('v')
+	plt.ylabel('b(v)')
 	plt.title("{} bid function, {}".format(auc_type, dist))
 	plt.show()
 
@@ -56,17 +58,25 @@ def sp_Uni_5_10(v, n):
 
 # Revenue
 def fp_rev_Uni_5_10(n):
-	return 5*(n-1.)/(n+1.)
+	return 5+5*fp_rev_Uni_0_1(n)
 
 def sp_rev_Uni_5_10(n):
-	return 5*(n-1.)/(n+1.)
+	x_array = np.arange(5, 10+step, step)
+	y_array = [(1-(x-5)/5.)*(((x-5)/5.)**(n-2))*x for x in x_array]
+	return n*(n-1)*(1/5.)*np.trapz(y=y_array, x=x_array)
 
 # St. Dev
-def fp_stdev_Uni_5_10(n):
-	return np.sqrt((5**2)*(((n-1.)**2)/(n*(n+2)))-fp_rev_Uni_5_10(n)**2) #not sure
+def fp_stdev_Uni_5_10(n): #TODO
+	# x_array = np.arange(5, 5+(((n-1)*np.power(10, 1./n)+5)/n)+step, step)
+	# y_array = [(((n*x-5)/(n-1))**(n-1))*(x**2) for x in x_array]
+	# return np.sqrt(((n**2)/(n-1))*np.trapz(y=y_array, x=x_array) - fp_rev_Uni_5_10(n)**2)
+	# #return np.sqrt((5**2)*(((n-1.)**2)/(n*(n+2)))-fp_rev_Uni_5_10(n)**2) #not sure
+	return -1
 
 def sp_stdev_Uni_5_10(n):
-	return np.sqrt((5**2)*((n*(n-1.))/((n+1)*(n+2)))-sp_rev_Uni_5_10(n)**2) #not sure
+	x_array = np.arange(5, 10+step, step)
+	y_array = [(1-(x-5)/5.)*(((x-5)/5.)**(n-2))*(x**2) for x in x_array]
+	return np.sqrt(n*(n-1)*(1/5.)*np.trapz(y=y_array, x=x_array) - sp_rev_Uni_5_10(n)**2)
 
 ################# TRIANGLE [0, 1]
 def fp_triangle(v, n):
@@ -109,7 +119,7 @@ def sp_stdev_triangle(n):
 	x_array_2 = np.arange(.5, 1+step, step)
 	y_array_1 = [(x**2)*(1-2*x**2)*(x**(2*n-3)) for x in x_array_1]
 	y_array_2 = [((1-x)**3)*((1-2*(1-x**2))**(n-2))*(x**2) for x in x_array_2]
-	return n*(n-1)*(2**n)*np.trapz(y=y_array_1, x=x_array_1) + 8*n*(n-1)*np.trapz(y=y_array_2, x=x_array_2)
+	return np.sqrt(n*(n-1)*(2**n)*np.trapz(y=y_array_1, x=x_array_1) + 8*n*(n-1)*np.trapz(y=y_array_2, x=x_array_2)-sp_rev_triangle(n)**2)
 
 ################# EXPONENTIAL (lambda=1)
 def fp_exp(v, n):
@@ -145,12 +155,11 @@ def fp_stdev_exp(n):
 def sp_stdev_exp(n):
 	x_array = np.arange(0, 1+step, step)
 	y_array = [np.exp(-2*1.0*x)*(1-np.exp(-1.0*x))**(n-2)*(x**2) for x in x_array]
-	return n*(n-1)*1*np.trapz(y=y_array, x=x_array)
+	return np.sqrt(n*(n-1)*1*np.trapz(y=y_array, x=x_array) - sp_rev_exp(n)**2)
 
 
 ################# RESERVE OPTIMIZATION
-
-# FOR U[0,1]
+################# UNIFORM [0,1]
 def run_u_0_1_auction(n):
 	bidder_vals = [sp_Uni_0_1(np.random.uniform(0, 1), n) for cnt in range(n)]
 	return sorted(bidder_vals)[-2]
@@ -176,7 +185,7 @@ def get_optimal_reserve_u_0_1(n, n_sims=500):
 		optimal_reserves.append(reserves[tmp.index(max(tmp))])
 	return seller_vals, optimal_reserves
 
-# FOR U[5,10]
+################# UNIFORM [5,10]
 def run_u_5_10_auction(n):
 	bidder_vals = [sp_Uni_5_10(np.random.uniform(5, 10), n) for cnt in range(n)]
 	return sorted(bidder_vals)[-2]
@@ -205,26 +214,26 @@ def get_optimal_reserve_u_5_10(n, n_sims=500):
 
 ################# MAIN
 # 1.a)
-d = {
-	"U(0,1)": {"First Price": fp_Uni_0_1,
-			   "Second Price": sp_Uni_0_1,
-			   "Range": [0, 1]},
-	"U(5,10)": {"First Price": fp_Uni_5_10,
-				"Second Price": sp_Uni_5_10,
-				"Range": [5, 10]},
-	"Triangular": {"First Price": fp_triangle,
-				   "Second Price": sp_triange,
-				   "Range": [0, 1]},
-	"Exp (lambda=1)": {"First Price": fp_exp,
-					   "Second Price": sp_exp,
-					   "Range": [0, 1]},
-}
-d = OrderedDict(sorted(d.items(), key=lambda t: t[0]))
+# d = {
+# 	"U(0,1)": {"First Price": fp_Uni_0_1,
+# 			   "Second Price": sp_Uni_0_1,
+# 			   "Range": [0, 1]},
+# 	"U(5,10)": {"First Price": fp_Uni_5_10,
+# 				"Second Price": sp_Uni_5_10,
+# 				"Range": [5, 10]},
+# 	"Triangular": {"First Price": fp_triangle,
+# 				   "Second Price": sp_triange,
+# 				   "Range": [0, 1]},
+# 	"Exp (lambda=1)": {"First Price": fp_exp,
+# 					   "Second Price": sp_exp,
+# 					   "Range": [0, 1]},
+# }
+# d = OrderedDict(sorted(d.items(), key=lambda t: t[0]))
 
-for dist in d:
-	for auc_type in d[dist]:
-		if auc_type != "Range":
-			plot_functions(d[dist][auc_type], [2, 5, 10], d[dist]["Range"], auc_type, dist)
+# for dist in d:
+# 	for auc_type in d[dist]:
+# 		if auc_type != "Range":
+# 			plot_functions(d[dist][auc_type], [2, 5, 10], d[dist]["Range"], auc_type, dist)
 
 
 # 1.b)
@@ -258,13 +267,13 @@ for dist in d:
 
 
 # 1.c)
-d = {
-	"U(0,1)": get_optimal_reserve_u_0_1,
-	"U(5,10)": get_optimal_reserve_u_5_10#,
-	# "Triangular": get_optimal_reserve__triangle,
-	# "Exp (lambda=1)": get_optimal_reserve_exp
-}
-d = OrderedDict(sorted(d.items(), key=lambda t: t[0]))
+# d = {
+# 	"U(0,1)": get_optimal_reserve_u_0_1,
+# 	"U(5,10)": get_optimal_reserve_u_5_10#,
+# 	# "Triangular": get_optimal_reserve__triangle,
+# 	# "Exp (lambda=1)": get_optimal_reserve_exp
+# }
+# d = OrderedDict(sorted(d.items(), key=lambda t: t[0]))
 
-for dist in d:
-	plot_reserves(d[dist], [2, 5, 10], dist)
+# for dist in d:
+# 	plot_reserves(d[dist], [2, 5, 10], dist)
