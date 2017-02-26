@@ -58,7 +58,7 @@ def sp_Uni_5_10(v, n):
 
 # Revenue
 def fp_rev_Uni_5_10(n):
-	return 5+5*fp_rev_Uni_0_1(n)
+	return 5+5*((n-1.)/(n+1.))
 
 def sp_rev_Uni_5_10(n):
 	x_array = np.arange(5, 10+step, step)
@@ -212,6 +212,55 @@ def get_optimal_reserve_u_5_10(n, n_sims=500):
 	return seller_vals, optimal_reserves
 	
 
+################# TRIANGLE
+def run_t_1_0_auction(n):
+    bidder_vals = [sp_triange(np.random.triangular(left=0, mode=0.5, right=1), n) for cnt in range(n)]
+    return sorted(bidder_vals)[-2]
+
+def get_reserve_profit_t_1_0(n, seller_val, reserve, num_sims=500):
+    profits = []
+    for i in range(num_sims):
+        win_bid = run_t_1_0_auction(n)
+        if win_bid > reserve:
+            profits.append(win_bid - seller_val)
+        else:
+            profits.append(0)
+    return np.mean(profits)
+
+def get_optimal_reserve__triangle(n, n_sims=500):
+    optimal_reserves = []
+    seller_vals = np.arange(0.01, 1.01, 0.01)
+    reserves = np.arange(0.01, 1.01, 0.01)
+    for seller_v in seller_vals:
+        tmp = [get_reserve_profit_t_1_0(n, seller_v, reserve, num_sims=n_sims) for reserve in reserves]
+        optimal_reserves.append(reserves[tmp.index(max(tmp))])
+    return seller_vals, optimal_reserves
+
+################# EXPONENTIAL
+def run_e_1_auction(n):
+    bidder_vals = [sp_exp(np.random.exponential(scale=1), n) for cnt in range(n)]
+    return sorted(bidder_vals)[-2]
+
+def get_reserve_profit_e_1(n, seller_val, reserve, num_sims=500):
+    profits = []
+    for i in range(num_sims):
+        win_bid = run_e_1_auction(n)
+        if win_bid > reserve:
+            profits.append(win_bid - seller_val)
+        else:
+            profits.append(0)
+    return np.mean(profits)
+
+def get_optimal_reserve_exp(n, n_sims=500):
+    optimal_reserves = []
+    seller_vals = np.arange(0.1, 5.00, 0.1)
+    reserves = np.arange(0.1, 5.00, 0.1)
+    for seller_v in seller_vals:
+        tmp = [get_reserve_profit_e_1(n, seller_v, reserve, num_sims=n_sims) for reserve in reserves]
+        optimal_reserves.append(reserves[tmp.index(max(tmp))])
+    return seller_vals, optimal_reserves
+
+############################################################################
 ################# MAIN
 # 1.a)
 d = {
@@ -269,9 +318,9 @@ for dist in d:
 # 1.c)
 d = {
 	"U(0,1)": get_optimal_reserve_u_0_1,
-	"U(5,10)": get_optimal_reserve_u_5_10#,
-	# "Triangular": get_optimal_reserve__triangle,
-	# "Exp (lambda=1)": get_optimal_reserve_exp
+	"U(5,10)": get_optimal_reserve_u_5_10,
+	"Triangular": get_optimal_reserve__triangle,
+	"Exp (lambda=1)": get_optimal_reserve_exp
 }
 d = OrderedDict(sorted(d.items(), key=lambda t: t[0]))
 
