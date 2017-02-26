@@ -214,26 +214,26 @@ def get_optimal_reserve_u_5_10(n, n_sims=500):
 
 ################# MAIN
 # 1.a)
-# d = {
-# 	"U(0,1)": {"First Price": fp_Uni_0_1,
-# 			   "Second Price": sp_Uni_0_1,
-# 			   "Range": [0, 1]},
-# 	"U(5,10)": {"First Price": fp_Uni_5_10,
-# 				"Second Price": sp_Uni_5_10,
-# 				"Range": [5, 10]},
-# 	"Triangular": {"First Price": fp_triangle,
-# 				   "Second Price": sp_triange,
-# 				   "Range": [0, 1]},
-# 	"Exp (lambda=1)": {"First Price": fp_exp,
-# 					   "Second Price": sp_exp,
-# 					   "Range": [0, 1]},
-# }
-# d = OrderedDict(sorted(d.items(), key=lambda t: t[0]))
+d = {
+	"U(0,1)": {"First Price": fp_Uni_0_1,
+			   "Second Price": sp_Uni_0_1,
+			   "Range": [0, 1]},
+	"U(5,10)": {"First Price": fp_Uni_5_10,
+				"Second Price": sp_Uni_5_10,
+				"Range": [5, 10]},
+	"Triangular": {"First Price": fp_triangle,
+				   "Second Price": sp_triange,
+				   "Range": [0, 1]},
+	"Exp (lambda=1)": {"First Price": fp_exp,
+					   "Second Price": sp_exp,
+					   "Range": [0, 1]},
+}
+d = OrderedDict(sorted(d.items(), key=lambda t: t[0]))
 
-# for dist in d:
-# 	for auc_type in d[dist]:
-# 		if auc_type != "Range":
-# 			plot_functions(d[dist][auc_type], [2, 5, 10], d[dist]["Range"], auc_type, dist)
+for dist in d:
+	for auc_type in d[dist]:
+		if auc_type != "Range":
+			plot_functions(d[dist][auc_type], [2, 5, 10], d[dist]["Range"], auc_type, dist)
 
 
 # 1.b)
@@ -267,13 +267,13 @@ for dist in d:
 
 
 # 1.c)
-# d = {
-# 	"U(0,1)": get_optimal_reserve_u_0_1,
-# 	"U(5,10)": get_optimal_reserve_u_5_10#,
-# 	# "Triangular": get_optimal_reserve__triangle,
-# 	# "Exp (lambda=1)": get_optimal_reserve_exp
-# }
-# d = OrderedDict(sorted(d.items(), key=lambda t: t[0]))
+d = {
+	"U(0,1)": get_optimal_reserve_u_0_1,
+	"U(5,10)": get_optimal_reserve_u_5_10#,
+	# "Triangular": get_optimal_reserve__triangle,
+	# "Exp (lambda=1)": get_optimal_reserve_exp
+}
+d = OrderedDict(sorted(d.items(), key=lambda t: t[0]))
 
-# for dist in d:
-# 	plot_reserves(d[dist], [2, 5, 10], dist)
+for dist in d:
+	plot_reserves(d[dist], [2, 5, 10], dist)
