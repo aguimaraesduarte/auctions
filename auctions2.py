@@ -76,13 +76,6 @@ def sp_stdev_Uni_5_10(n):
 	return np.sqrt(n*(n-1)*(1/5.)*np.trapz(y=y_array, x=x_array) - sp_rev_Uni_5_10(n)**2)
 
 ################# TRIANGLE [0, 1]
-def fp_triangle(v, n):
-	if v == 0:
-		return 0.0
-	x_array = np.arange(0, v+step, step)
-	y_array = [Fn1_triangle(x, n) for x in x_array]
-	return v - np.trapz(y=y_array, x=x_array)/Fn1_triangle(v, n)
-
 def Fn1_triangle(x, n):
 	if x <= 0.5:
 		return ((2*x**2)**(n-1))
@@ -92,18 +85,12 @@ def Fn1_triangle(x, n):
 def sp_triange(v, n):
 	return v
 
-# def tri_bid_fn(v,n):
-# 	if v<0.5:
-# 		return v - 8 * v ** 3 / n
-# 	return v - 2/n * (2 * 0.5 * (2 * 0.5 ** 2) ** n + 2 * (1 - v) * (1 - 2 * (1 - v) ** 2) ** n - 0.5 ** (n - 1)) / \
-# 			   (1 - 2 * (1 - v) ** 2) ** n
-
-def fp_bid_triangle(v,n):
+def fp_triangle(v,n):
 	return v - integrate.quad(lambda x: Fn1_triangle(x, n), 0, v)[0]/Fn1_triangle(v, n)
 
 # Revenue
 def fp_rev_triangle(n):
-	return np.mean([np.max([fp_bid_triangle(v,n) for v in triangular(0,0.5,1,n)]) for _ in range(1000)])
+	return np.mean([np.max([fp_triangle(v,n) for v in triangular(0,0.5,1,n)]) for _ in range(1000)])
 
 def sp_rev_triangle(n):
 	return np.mean([sorted(triangular(0,0.5,1,n))[-2] for _ in range(1000)])
@@ -111,39 +98,32 @@ def sp_rev_triangle(n):
 
 # St. Dev
 def fp_stdev_triangle(n):
-	return np.std([np.max([fp_bid_triangle(v,n) for v in triangular(0,0.5,1,n)]) for _ in range(1000)])
+	return np.std([np.max([fp_triangle(v,n) for v in triangular(0,0.5,1,n)]) for _ in range(1000)])
 
 def sp_stdev_triangle(n):
 	return np.std([sorted(triangular(0,0.5,1,n))[-2] for _ in range(1000)])
 
 ################# EXPONENTIAL (lambda=1)
-def fp_exp(v, n):
-	if v == 0:
-		return 0.0
-	x_array = np.arange(0, v+step, step)
-	y_array = [Fn1_exp(x, n) for x in x_array]
-	return v - np.trapz(y=y_array, x=x_array)/Fn1_exp(v, n)
-
 def Fn1_exp(x, n):
 	return ((1.0-np.exp(-1.0*x))**(n-1))
 
 def sp_exp(v, n):
 	return v
 
-def fp_bid_exp(v, n):
+def fp_exp(v, n):
 	return v - integrate.quad(lambda x: Fn1_exp(x, n), 0, v)[0]/Fn1_exp(v, n)
 
 
 # Revenue
 def fp_rev_exp(n):
-	return np.mean([np.max([fp_bid_exp(v,n) for v in np.random.exponential(1,n)]) for _ in range(1000)])
+	return np.mean([np.max([fp_exp(v,n) for v in np.random.exponential(1,n)]) for _ in range(1000)])
 
 def sp_rev_exp(n):
 	return  np.mean([sorted(np.random.exponential(1,n))[-2] for _ in range(1000)])
 
 # St. Dev
 def fp_stdev_exp(n):
-	return np.std([np.max([fp_bid_exp(v,n) for v in np.random.exponential(1,n)]) for _ in range(1000)])
+	return np.std([np.max([fp_exp(v,n) for v in np.random.exponential(1,n)]) for _ in range(1000)])
 
 def sp_stdev_exp(n):
 	return  np.std([sorted(np.random.exponential(1,n))[-2] for _ in range(1000)])
@@ -261,7 +241,7 @@ d = {
 	"U(5,10)": {"First Price": fp_Uni_5_10,
 				"Second Price": sp_Uni_5_10,
 				"Range": [5, 10]},
-	"Triangular": {"First Price": fp_triangle,
+	"Triangular": {"First Price": fp_bid_triangle,
 				   "Second Price": sp_triange,
 				   "Range": [0, 1]},
 	"Exp (lambda=1)": {"First Price": fp_exp,
