@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import triang
 from collections import OrderedDict
+import scipy.integrate as integrate
 
 step = 0.001
 
@@ -91,31 +92,29 @@ def Fn1_triangle(x, n):
 def sp_triange(v, n):
 	return v
 
+# def tri_bid_fn(v,n):
+# 	if v<0.5:
+# 		return v - 8 * v ** 3 / n
+# 	return v - 2/n * (2 * 0.5 * (2 * 0.5 ** 2) ** n + 2 * (1 - v) * (1 - 2 * (1 - v) ** 2) ** n - 0.5 ** (n - 1)) / \
+# 			   (1 - 2 * (1 - v) ** 2) ** n
+
+def fp_bid_triangle(v,n):
+	return v - integrate.quad(lambda x: Fn1_triangle(x, n), 0, v)[0]/Fn1_triangle(v, n)
+
 # Revenue
 def fp_rev_triangle(n):
-	x_array = np.arange(0, 1+step, step) # should not be 1 I think
-	y_array = [fp_triangle(x, n)*x for x in x_array]
-	return np.trapz(y=y_array, x=x_array)
+	return np.mean([np.max([fp_bid_triangle(v,n) for v in triangular(0,0.5,1,n)]) for _ in range(1000)])
 
 def sp_rev_triangle(n):
-	x_array_1 = np.arange(0, .5+step, step)
-	x_array_2 = np.arange(.5, 1+step, step)
-	y_array_1 = [(x**2)*(1-2*x**2)*(x**(2*n-4)) for x in x_array_1]
-	y_array_2 = [((1-x)**3)*((1-2*(1-x**2))**(n-2))*x for x in x_array_2]
-	return n*(n-1)*(2**n)*np.trapz(y=y_array_1, x=x_array_1) + 8*n*(n-1)*np.trapz(y=y_array_2, x=x_array_2)
+	return np.mean([sorted(triangular(0,0.5,1,n))[-2] for _ in range(1000)])
+
 
 # St. Dev
 def fp_stdev_triangle(n):
-	x_array = np.arange(0, 1+step, step) # should not be 1 I think
-	y_array = [fp_triangle(x, n)*(x**2) for x in x_array]
-	return np.sqrt(np.trapz(y=y_array, x=x_array)-fp_rev_triangle(n)**2)
+	return np.std([np.max([fp_bid_triangle(v,n) for v in triangular(0,0.5,1,n)]) for _ in range(1000)])
 
 def sp_stdev_triangle(n):
-	x_array_1 = np.arange(0, .5+step, step)
-	x_array_2 = np.arange(.5, 1+step, step)
-	y_array_1 = [(x**2)*(1-2*x**2)*(x**(2*n-3)) for x in x_array_1]
-	y_array_2 = [((1-x)**3)*((1-2*(1-x**2))**(n-2))*(x**2) for x in x_array_2]
-	return np.sqrt(n*(n-1)*(2**n)*np.trapz(y=y_array_1, x=x_array_1) + 8*n*(n-1)*np.trapz(y=y_array_2, x=x_array_2)-sp_rev_triangle(n)**2)
+	return np.std([sorted(triangular(0,0.5,1,n))[-2] for _ in range(1000)])
 
 ################# EXPONENTIAL (lambda=1)
 def fp_exp(v, n):
@@ -131,27 +130,23 @@ def Fn1_exp(x, n):
 def sp_exp(v, n):
 	return v
 
+def fp_bid_exp(v, n):
+	return v - integrate.quad(lambda x: Fn1_exp(x, n), 0, v)[0]/Fn1_exp(v, n)
+
+
 # Revenue
 def fp_rev_exp(n):
-	x_array = np.arange(0, 1+step, step) # should not be 1 I think
-	y_array = [fp_exp(x, n)*x for x in x_array]
-	return np.trapz(y=y_array, x=x_array)
+	return np.mean([np.max([fp_bid_exp(v,n) for v in np.random.exponential(1,n)]) for _ in range(1000)])
 
 def sp_rev_exp(n):
-	x_array = np.arange(0, 1+step, step)
-	y_array = [np.exp(-2*1.0*x)*(1-np.exp(-1.0*x))**(n-2)*x for x in x_array]
-	return n*(n-1)*1*np.trapz(y=y_array, x=x_array)
+	return  np.mean([sorted(np.random.exponential(1,n))[-2] for _ in range(1000)])
 
 # St. Dev
 def fp_stdev_exp(n):
-	x_array = np.arange(0, 1+step, step) # should not be 1 I think
-	y_array = [fp_exp(x, n)*(x**2) for x in x_array]
-	return np.sqrt(np.trapz(y=y_array, x=x_array) - fp_rev_exp(n)**2)
+	return np.std([np.max([fp_bid_exp(v,n) for v in np.random.exponential(1,n)]) for _ in range(1000)])
 
 def sp_stdev_exp(n):
-	x_array = np.arange(0, 1+step, step)
-	y_array = [np.exp(-2*1.0*x)*(1-np.exp(-1.0*x))**(n-2)*(x**2) for x in x_array]
-	return np.sqrt(n*(n-1)*1*np.trapz(y=y_array, x=x_array) - sp_rev_exp(n)**2)
+	return  np.std([sorted(np.random.exponential(1,n))[-2] for _ in range(1000)])
 
 
 ################# RESERVE OPTIMIZATION
