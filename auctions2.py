@@ -58,7 +58,7 @@ def sp_Uni_5_10(v, n):
 
 # Revenue
 def fp_rev_Uni_5_10(n):
-	return 5+5*((n-1.)/(n+1.))
+	return 5+5*fp_rev_Uni_0_1(n)
 
 def sp_rev_Uni_5_10(n):
 	x_array = np.arange(5, 10+step, step)
@@ -66,12 +66,8 @@ def sp_rev_Uni_5_10(n):
 	return n*(n-1)*(1/5.)*np.trapz(y=y_array, x=x_array)
 
 # St. Dev
-def fp_stdev_Uni_5_10(n): #TODO
-	# x_array = np.arange(5, 5+(((n-1)*np.power(10, 1./n)+5)/n)+step, step)
-	# y_array = [(((n*x-5)/(n-1))**(n-1))*(x**2) for x in x_array]
-	# return np.sqrt(((n**2)/(n-1))*np.trapz(y=y_array, x=x_array) - fp_rev_Uni_5_10(n)**2)
-	# #return np.sqrt((5**2)*(((n-1.)**2)/(n*(n+2)))-fp_rev_Uni_5_10(n)**2) #not sure
-	return -1
+def fp_stdev_Uni_5_10(n):
+	return 5*fp_stdev_Uni_0_1(n)
 
 def sp_stdev_Uni_5_10(n):
 	x_array = np.arange(5, 10+step, step)
