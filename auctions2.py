@@ -90,18 +90,18 @@ def fp_triangle(v,n):
 
 # Revenue
 def fp_rev_triangle(n):
-	return np.mean([np.max([fp_triangle(v,n) for v in triangular(0,0.5,1,n)]) for _ in range(1000)])
+	return np.mean([np.max([fp_triangle(v,n) for v in np.random.triangular(0,0.5,1,n)]) for _ in range(1000)])
 
 def sp_rev_triangle(n):
-	return np.mean([sorted(triangular(0,0.5,1,n))[-2] for _ in range(1000)])
+	return np.mean([sorted(np.random.triangular(0,0.5,1,n))[-2] for _ in range(1000)])
 
 
 # St. Dev
 def fp_stdev_triangle(n):
-	return np.std([np.max([fp_triangle(v,n) for v in triangular(0,0.5,1,n)]) for _ in range(1000)])
+	return np.std([np.max([fp_triangle(v,n) for v in np.random.triangular(0,0.5,1,n)]) for _ in range(1000)])
 
 def sp_stdev_triangle(n):
-	return np.std([sorted(triangular(0,0.5,1,n))[-2] for _ in range(1000)])
+	return np.std([sorted(np.random.triangular(0,0.5,1,n))[-2] for _ in range(1000)])
 
 ################# EXPONENTIAL (lambda=1)
 def Fn1_exp(x, n):
@@ -241,7 +241,7 @@ d = {
 	"U(5,10)": {"First Price": fp_Uni_5_10,
 				"Second Price": sp_Uni_5_10,
 				"Range": [5, 10]},
-	"Triangular": {"First Price": fp_bid_triangle,
+	"Triangular": {"First Price": fp_triangle,
 				   "Second Price": sp_triange,
 				   "Range": [0, 1]},
 	"Exp (lambda=1)": {"First Price": fp_exp,
